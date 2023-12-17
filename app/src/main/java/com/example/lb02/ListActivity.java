@@ -1,5 +1,7 @@
 package com.example.lb02;
 
+import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,10 +16,13 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 public class ListActivity extends AppCompatActivity {
 
     final String LifeCycleTag = "ActivityLifecycleState";
+    final String ShPrefEdit = "SharedPreferencesEdit";
     EditText editText;
     Button addButton;
     Button removeButton;
@@ -27,12 +32,15 @@ public class ListActivity extends AppCompatActivity {
     ArrayAdapter<String> textAdapter;
     ArrayList<String>selectedRows;
     Bundle arguments;
+    SharedPreferences sharedPreferences;
+    SharedPreferences.Editor spEditor;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_layout);
         Log.d(LifeCycleTag,"ListActivity created");
-
         arguments = getIntent().getExtras();
 
         editText = findViewById(R.id.et1);
@@ -45,7 +53,13 @@ public class ListActivity extends AppCompatActivity {
         selectedRows = new ArrayList<>();
         textAdapter = new ArrayAdapter<>(this,R.layout.list_item_layout, notes);
 
+
         listView.setAdapter(textAdapter);
+
+        loadList();
+
+        Toast.makeText(ListActivity.this,
+                "Welcome, "+arguments.getString("login")+"!", Toast.LENGTH_SHORT).show();
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -83,8 +97,7 @@ public class ListActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         Log.d(LifeCycleTag,"ListActivity started");
-        Toast.makeText(ListActivity.this,
-                "Welcome, "+arguments.getString("login")+"!", Toast.LENGTH_SHORT).show();
+
     }
     @Override
     protected void onResume() {
@@ -99,7 +112,9 @@ public class ListActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
+        saveList();
         Log.d(LifeCycleTag,"ListActivity stopped");
+
     }
     @Override
     protected void onDestroy() {
@@ -123,6 +138,41 @@ public class ListActivity extends AppCompatActivity {
             textAdapter.notifyDataSetChanged();
         }
     }
+    private void saveList(){
+        try {
+            sharedPreferences = getPreferences(MODE_PRIVATE);
+            spEditor = sharedPreferences.edit();
+
+            String line = "";
+            for (String i : notes) {
+                line += i + ":";
+            }
+
+            spEditor.putString("list", line);
+            spEditor.apply();
+
+            Log.d(ShPrefEdit, "List saved, items:" + notes.size());
+
+        }catch(Exception ex){
+            Log.e("LoadListError",ex.toString());
+        }
+    }
+    private void loadList(){
+        try {
+            sharedPreferences = getPreferences(MODE_PRIVATE);
+            String line = sharedPreferences.getString("list", null);
+            if(line.isEmpty())return;
+
+            String[] arr = line.split(":");
+            for (String i : arr) {
+                notes.add(i);
+            }
+            textAdapter.notifyDataSetChanged();
+            Log.d(ShPrefEdit, "List loaded, items:" + notes.size());
+        }catch(Exception ex){
+            Log.e("SaveListError",ex.toString());
+        }
+    }
     private void clearList(){
         if(!notes.isEmpty()){
             selectedRows.clear();
@@ -131,4 +181,6 @@ public class ListActivity extends AppCompatActivity {
             textAdapter.notifyDataSetChanged();
         }
     }
+
+
 }
