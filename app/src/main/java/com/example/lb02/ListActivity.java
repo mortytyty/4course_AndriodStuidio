@@ -1,8 +1,6 @@
 package com.example.lb02;
 
 import android.content.SharedPreferences;
-import android.content.res.Resources;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -16,8 +14,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Collections;
 
 public class ListActivity extends AppCompatActivity {
 
@@ -67,11 +64,8 @@ public class ListActivity extends AppCompatActivity {
                 String note = notes.get(position);
                 if(listView.isItemChecked(position)){
                     selectedRows.add(note);
-                    //view.setBackgroundColor(Color.rgb(192,182,255));
-
                 }else{
                     selectedRows.remove(note);
-                    //view.setBackgroundColor(Color.WHITE);
                 }
             }
         });
@@ -81,9 +75,7 @@ public class ListActivity extends AppCompatActivity {
             addRow(note);
         });
 
-        removeButton.setOnClickListener(v -> {
-            removeRow();
-        });
+        removeButton.setOnClickListener(v -> removeRow());
 
         clearButton.setOnClickListener(v -> clearList());
     }
@@ -143,12 +135,12 @@ public class ListActivity extends AppCompatActivity {
             sharedPreferences = getPreferences(MODE_PRIVATE);
             spEditor = sharedPreferences.edit();
 
-            String line = "";
+            StringBuilder line = new StringBuilder();
             for (String i : notes) {
-                line += i + ":";
+                line.append(i).append(":");
             }
 
-            spEditor.putString("list", line);
+            spEditor.putString("list", line.toString());
             spEditor.apply();
 
             Log.d(ShPrefEdit, "List saved, items:" + notes.size());
@@ -160,13 +152,11 @@ public class ListActivity extends AppCompatActivity {
     private void loadList(){
         try {
             sharedPreferences = getPreferences(MODE_PRIVATE);
-            String line = sharedPreferences.getString("list", null);
+            String line = sharedPreferences.getString("list", "");
             if(line.isEmpty())return;
 
             String[] arr = line.split(":");
-            for (String i : arr) {
-                notes.add(i);
-            }
+            Collections.addAll(notes, arr);
             textAdapter.notifyDataSetChanged();
             Log.d(ShPrefEdit, "List loaded, items:" + notes.size());
         }catch(Exception ex){

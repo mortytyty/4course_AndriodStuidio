@@ -37,7 +37,7 @@ public class LoginActivity extends AppCompatActivity {
         nameText = findViewById(R.id.et1name);
         passText = findViewById(R.id.et2pass);
         loginButton = findViewById(R.id.btn1login);
-        themeButton = findViewById(R.id.btn3theme);
+        themeButton = findViewById(R.id.btn2theme);
 
         if(themeFlag==1){
             themeButton.setImageResource(R.drawable.moon);
@@ -51,12 +51,7 @@ public class LoginActivity extends AppCompatActivity {
 
         Intent intent = new Intent(this, ListActivity.class);
 
-        themeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                changeTheme();
-            }
-        });
+        themeButton.setOnClickListener(v -> changeTheme());
         loginButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
