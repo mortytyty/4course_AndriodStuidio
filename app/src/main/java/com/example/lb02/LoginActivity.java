@@ -8,21 +8,27 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Toast;
+
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 
-public class LoginActivity extends AppCompatActivity {
+import com.example.lb02.Handlers.DataBaseHandler;
+
+public class LoginActivity extends AppCompatActivity implements View.OnClickListener{
 
     final String LifeCycleTag = "ActivityLifecycleState";
 
     EditText nameText;
     EditText passText;
     Button loginButton;
+    Button registerButton;
     ImageButton themeButton;
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor spEditor;
+    DataBaseHandler dataBaseHandler;
     int themeFlag;
 
     @Override
@@ -36,8 +42,17 @@ public class LoginActivity extends AppCompatActivity {
 
         nameText = findViewById(R.id.et1name);
         passText = findViewById(R.id.et2pass);
-        loginButton = findViewById(R.id.btn1login);
-        themeButton = findViewById(R.id.btn2theme);
+
+        loginButton = findViewById(R.id.btn_log_login);
+        registerButton=findViewById(R.id.btn_log_register);
+        themeButton = findViewById(R.id.btn_log_theme);
+        themeButton.setOnClickListener(this);
+        loginButton.setOnClickListener(this);
+        registerButton.setOnClickListener(this);
+
+
+        dataBaseHandler = new DataBaseHandler(this);
+
 
         if(themeFlag==1){
             themeButton.setImageResource(R.drawable.moon);
@@ -49,21 +64,6 @@ public class LoginActivity extends AppCompatActivity {
         }
 
 
-        Intent intent = new Intent(this, ListActivity.class);
-
-        themeButton.setOnClickListener(v -> changeTheme());
-        loginButton.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                String name = nameText.getText().toString();
-                String pass = passText.getText().toString();
-                if(!(name.isEmpty())&&!(pass.isEmpty())) {
-                    intent.putExtra("login",name);
-                    startActivity(intent);
-                }
-            }
-        });
         Log.d(LifeCycleTag,"LoginActivity created");
     }
     @Override
@@ -128,5 +128,31 @@ public class LoginActivity extends AppCompatActivity {
         Log.d("ThemeDebug","Changed: "+themeFlag);
     }
 
+    @Override
+    public void onClick(View view) {
+        int id = view.getId();
+        if(id == R.id.btn_log_login) {
 
+            String login = nameText.getText().toString();
+            String pass = passText.getText().toString();
+
+            if(!(login.isEmpty())&&!(pass.isEmpty())) {
+                if(dataBaseHandler.checkDataValidation(login,pass)) {
+                    Intent listIntent = new Intent(this, ListActivity.class);
+                    listIntent.putExtra("login", login);
+                    startActivity(listIntent);
+                }else{
+                    Toast.makeText(LoginActivity.this,
+                            "Invalid login or password", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+        else if(id == R.id.btn_log_register){
+            Intent regIntent = new Intent(this, RegistrationActivity.class);
+            startActivity(regIntent);
+        }
+        else if(id == R.id.btn_log_theme){
+            changeTheme();
+        }
+    }
 }

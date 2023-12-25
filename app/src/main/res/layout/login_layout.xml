@@ -14,12 +14,11 @@
         android:layout_weight="1"/>
 
     <TextView
-        android:id="@+id/tw1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:textSize="24sp"
         android:text="@string/login"
+        android:textSize="26sp"
+        android:layout_marginBottom="15dp"/>
         />
     <EditText
         android:id="@+id/et1name"
@@ -27,7 +26,7 @@
         android:layout_height="70dp"
         android:paddingTop="26dp"
         android:layout_gravity="center"
-        android:hint="@string/enter_username"
+        android:hint="@string/enter_login"
         android:autofillHints=""
         android:inputType="text" />
 
@@ -40,13 +39,28 @@
         android:layout_gravity="center"
         android:hint="@string/enter_password"
         android:autofillHints="" />
-    
-    <Button android:id="@+id/btn1login"
+    <LinearLayout
+        android:id="@+id/layout2btns"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        tools:ignore="ExtraText"
+        android:layout_marginTop="20dp">
+
+    <Button android:id="@+id/btn_log_login"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_margin="16dp"
+        android:layout_margin="8dp"
         android:text="@string/log_in" />
+    <Button android:id="@+id/btn_log_register"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="8dp"
+        android:text="@string/register" />
+        />
+    </LinearLayout>
 
     <TextView
         android:layout_width="wrap_content"
@@ -55,9 +69,9 @@
 
 
     <ImageButton
-        android:id="@+id/btn2theme"
+        android:id="@+id/btn_log_theme"
         android:layout_width="45dp"
-                android:layout_height="45dp"
+        android:layout_height="45dp"
         android:layout_gravity="end|bottom"
         android:layout_margin="10dp"
         android:background="@drawable/round_corner_night"
