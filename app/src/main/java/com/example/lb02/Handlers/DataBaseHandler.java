@@ -21,7 +21,6 @@ public class DataBaseHandler extends SQLiteOpenHelper {
     public DataBaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
-
     @Override
     public void onCreate(SQLiteDatabase db) {
         String CREATE_USERS_TABLE =
@@ -35,13 +34,11 @@ public class DataBaseHandler extends SQLiteOpenHelper {
                 ")";
         db.execSQL(CREATE_USERS_TABLE);
     }
-
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + DBContract.UserEntry.TABLE_NAME);
         onCreate(db);
     }
-
     public boolean checkUserLoginExist(String login) {
         SQLiteDatabase dataBase = this.getReadableDatabase();
 
@@ -103,7 +100,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         db.close();
     }
     public void removeUser(String login){
-
+        
     }
     public void changePassword(User user, String newPass){
 
@@ -121,5 +118,4 @@ public class DataBaseHandler extends SQLiteOpenHelper {
             } while (cursor.moveToNext());
         }
     }
-
 }

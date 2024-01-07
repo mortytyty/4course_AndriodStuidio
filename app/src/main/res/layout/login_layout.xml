@@ -8,10 +8,6 @@
     android:orientation="vertical"
     android:gravity="center">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -19,7 +15,7 @@
         android:text="@string/login"
         android:textSize="26sp"
         android:layout_marginBottom="15dp"/>
-        />
+
     <EditText
         android:id="@+id/et1name"
         android:layout_width="200dp"
@@ -39,8 +35,9 @@
         android:layout_gravity="center"
         android:hint="@string/enter_password"
         android:autofillHints="" />
+
     <LinearLayout
-        android:id="@+id/layout2btns"
+        android:id="@+id/layout2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -53,33 +50,14 @@
         android:layout_gravity="center"
         android:layout_margin="8dp"
         android:text="@string/log_in" />
+
     <Button android:id="@+id/btn_log_register"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_margin="8dp"
         android:text="@string/register" />
-        />
+
     </LinearLayout>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"/>
-
-
-    <ImageButton
-        android:id="@+id/btn_log_theme"
-        android:layout_width="45dp"
-        android:layout_height="45dp"
-        android:layout_gravity="end|bottom"
-        android:layout_margin="10dp"
-        android:background="@drawable/round_corner_night"
-        android:padding="10dp"
-        android:scaleType="fitCenter"
-        android:src="@drawable/sun"
-        tools:ignore="TouchTargetSizeCheck"
-        android:contentDescription="@string/change_theme" />
-
 
 </LinearLayout>
