@@ -1,5 +1,6 @@
 package com.example.lb02;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
@@ -9,12 +10,14 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Objects;
 
 public class ListActivity extends AppCompatActivity {
 
@@ -28,9 +31,10 @@ public class ListActivity extends AppCompatActivity {
     ArrayList<String>notes;
     ArrayAdapter<String> textAdapter;
     ArrayList<String>selectedRows;
-    Bundle arguments;
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor spEditor;
+    BottomNavigationView bottomNavigationView;
+    String login;
 
 
     @Override
@@ -38,7 +42,8 @@ public class ListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_layout);
         Log.d(LifeCycleTag,"ListActivity created");
-        arguments = getIntent().getExtras();
+
+        login = Objects.requireNonNull(getIntent().getExtras()).getString("login");
 
         editText = findViewById(R.id.et1);
         addButton = findViewById(R.id.btn1add);
@@ -50,14 +55,26 @@ public class ListActivity extends AppCompatActivity {
         selectedRows = new ArrayList<>();
         textAdapter = new ArrayAdapter<>(this,R.layout.list_item_layout, notes);
 
-
         listView.setAdapter(textAdapter);
 
+        bottomNavigationView = findViewById(R.id.bottomNavigationView);
+        bottomNavigationView.setSelectedItemId(R.id.bottom_list);
+        bottomNavigationView.setOnItemSelectedListener(item -> {
+            int id = item.getItemId();
+            if(id == R.id.bottom_list)
+                return true;
+            else if (id == R.id.bottom_profile)
+            {
+                Intent accountIntent = new Intent(getApplicationContext(), AccountActivity.class);
+                accountIntent.putExtra("login", login);
+                startActivity(accountIntent);
+                finish();
+                return true;
+            }
+            return false;
+        });
+
         loadList();
-
-        Toast.makeText(ListActivity.this,
-                "Welcome, "+arguments.getString("login")+"!", Toast.LENGTH_SHORT).show();
-
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

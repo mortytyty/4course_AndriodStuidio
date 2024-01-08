@@ -9,4 +9,6 @@
     <color name="purple_200">#ffbb86fc</color>
     <color name="purple_500">#ff6200ee</color>
     <color name="purple_700">#ff3700b3</color>
+    <color name="dark_red">#703232</color>
+    <color name="light_grey">#4BA3A3A3</color>
 </resources>

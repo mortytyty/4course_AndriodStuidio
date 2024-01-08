@@ -88,7 +88,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         }
         return false;
     }
-    public void addUser(User user) {
+    public long addUser(User user) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
@@ -96,14 +96,49 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         values.put(DBContract.UserEntry.COLUMN_NAME_LOGIN, user.getLogin());
         values.put(DBContract.UserEntry.COLUMN_NAME_PASS, user.getPass());
 
-        db.insert(DBContract.UserEntry.TABLE_NAME, null, values);
+        long newRowId = db.insert(DBContract.UserEntry.TABLE_NAME, null, values);
         db.close();
+        return newRowId;
     }
-    public void removeUser(String login){
-        
+    public int removeUser(String login){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String selection = DBContract.UserEntry.COLUMN_NAME_LOGIN + " LIKE ?";
+        String[] selectionArgs = { login };
+        int deletedRows = db.delete(DBContract.UserEntry.TABLE_NAME,selection ,selectionArgs);
+        db.close();
+        return deletedRows;
     }
-    public void changePassword(User user, String newPass){
+    public int changePassword(String login, String newPass){
+        SQLiteDatabase db = this.getWritableDatabase();
 
+        ContentValues values = new ContentValues();
+        values.put(DBContract.UserEntry.COLUMN_NAME_PASS, newPass);
+
+        String selection = DBContract.UserEntry.COLUMN_NAME_LOGIN + " LIKE ?";
+        String[] selectionArgs = { login };
+
+        int count = db.update(
+                DBContract.UserEntry.TABLE_NAME,
+                values,
+                selection,
+                selectionArgs);
+
+        db.close();
+        return count;
+    }
+    public String getName(String login){
+        String selectQuery = "SELECT  "+DBContract.UserEntry.COLUMN_NAME_FIRSTNAME+", "+DBContract.UserEntry.COLUMN_NAME_LOGIN+" FROM " + DBContract.UserEntry.TABLE_NAME;
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                if (Objects.equals(cursor.getString(1), login))
+                    return cursor.getString(0);
+            } while (cursor.moveToNext());
+        }
+        return "empty *-*";
     }
     public void getTableLog() {
 

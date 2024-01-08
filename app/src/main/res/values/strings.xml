@@ -19,6 +19,7 @@
     <string name="enter_name">Enter firstname</string>
     <string name="enter_login">Enter login</string>
     <string name="enter_password">Enter password</string>
+    <string name="delete">Delete</string>
 
     <string name="change_theme">Change theme</string>
 </resources>
