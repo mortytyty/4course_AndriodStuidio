@@ -1,5 +1,6 @@
 package com.example.lb02;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -43,6 +44,7 @@ public class ListActivity extends AppCompatActivity {
         setContentView(R.layout.main_layout);
         Log.d(LifeCycleTag,"ListActivity created");
 
+
         login = Objects.requireNonNull(getIntent().getExtras()).getString("login");
 
         editText = findViewById(R.id.et1);
@@ -68,6 +70,7 @@ public class ListActivity extends AppCompatActivity {
                 Intent accountIntent = new Intent(getApplicationContext(), AccountActivity.class);
                 accountIntent.putExtra("login", login);
                 startActivity(accountIntent);
+                overridePendingTransition(0,0);
                 finish();
                 return true;
             }

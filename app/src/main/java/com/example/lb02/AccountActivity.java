@@ -1,5 +1,6 @@
 package com.example.lb02;
 
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -33,6 +34,8 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.account_layout);
 
+        overrideActivityTransition(Activity.OVERRIDE_TRANSITION_OPEN,0,0);
+
         bDeleteAccount= findViewById(R.id.btn2delete);
         bChangePassword= findViewById(R.id.btn1change);
         bLogOut = findViewById(R.id.btn3logout);
@@ -47,11 +50,23 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
         etNewPass= findViewById(R.id.et1newpass);
 
         dbHandler = new DataBaseHandler(this);
+        dbHandler.getTableLog();
 
         login = Objects.requireNonNull(getIntent().getExtras()).getString("login");
 
         twLogin.setText(login);
-        twName.setText(dbHandler.getName(login));
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                twName.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        twName.setText(dbHandler.getName(login));
+                    }
+                });
+            }
+        }).start();
 
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
         bottomNavigationView.setSelectedItemId(R.id.bottom_profile);
@@ -64,6 +79,7 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
                 Intent listIntent = new Intent(getApplicationContext(), ListActivity.class);
                 listIntent.putExtra("login", login);
                 startActivity(listIntent);
+                overridePendingTransition(0,0);
                 finish();
                 return true;
             }
@@ -71,6 +87,7 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
         });
 
     }
+
     @Override
     public void onClick(View view) {
         int id = view.getId();
@@ -88,7 +105,14 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
                         "Password must be longer than 5 characters", Toast.LENGTH_SHORT).show();
                 return;
             }
-            dbHandler.changePassword(login,newPass);
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    dbHandler.changePassword(login,newPass);
+                    dbHandler.getTableLog();
+                }
+            }).start();
+
             Toast.makeText(AccountActivity.this,
                     "Password successfully changed", Toast.LENGTH_SHORT).show();
         }
@@ -101,7 +125,13 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
             builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    dbHandler.removeUser(login);
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            dbHandler.removeUser(login);
+                            dbHandler.getTableLog();
+                        }
+                    }).start();
                     finish();
                 }
             });
@@ -120,7 +150,7 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
             builder.setTitle("Log Out");
             builder.setMessage("Are you sure you want to log out of the account?");
             builder.setIcon(R.drawable.logout_icon);
-            builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
+            builder.setPositiveButton(R.string.logout, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     finish();

@@ -143,6 +143,7 @@
         app:itemIconSize="30dp"
         app:itemIconTint="@drawable/bottom_item_selector"
         app:itemRippleColor="@android:color/transparent"
-        app:labelVisibilityMode="unlabeled"/>
+        app:labelVisibilityMode="unlabeled"
+        app:itemActiveIndicatorStyle="@null"/>
 
 </LinearLayout>

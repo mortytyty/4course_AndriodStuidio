@@ -9,6 +9,9 @@ import android.util.Log;
 
 import com.example.lb02.Models.User;
 
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.Objects;
 
 
@@ -56,10 +59,12 @@ public class DataBaseHandler extends SQLiteOpenHelper {
             do {
                 //Log.d("DataBaseOut","Login: "+cursor.getString(0)+" "+login);
                 if (Objects.equals(cursor.getString(0), login)) {
+                    dataBase.close();
                     return true;
                 }
             } while (cursor.moveToNext());
         }
+        dataBase.close();
         return false;
     }
     public boolean checkDataValidation(String login,String pass){
@@ -82,10 +87,12 @@ public class DataBaseHandler extends SQLiteOpenHelper {
                 //Log.d("DataBaseOut","Login: "+cursor.getString(0)+" "+login);
                 //Log.d("DataBaseOut","Pass: "+cursor.getString(1)+" "+pass);
                 if (Objects.equals(cursor.getString(0), login) && Objects.equals(cursor.getString(1), pass)){
+                    dataBase.close();
                     return true;
                 }
             } while (cursor.moveToNext());
         }
+        dataBase.close();
         return false;
     }
     public long addUser(User user) {
@@ -135,9 +142,13 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         if (cursor.moveToFirst()) {
             do {
                 if (Objects.equals(cursor.getString(1), login))
+                {
+                    db.close();
                     return cursor.getString(0);
+                }
             } while (cursor.moveToNext());
         }
+        db.close();
         return "empty *-*";
     }
     public void getTableLog() {
@@ -147,10 +158,20 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
 
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss");
+        LocalTime localTime = LocalTime.now();
+
+        String key="DataBase (version "+dtf.format(localTime)+")";
+        String row;
         if (cursor.moveToFirst()) {
             do {
-                Log.d("DataBaseList",cursor.getString(1)+" "+cursor.getString(2)+" "+cursor.getString(3));
+                row =   "ID: "+cursor.getString(0)+", "
+                        +"FirstName: "+cursor.getString(1)+", "
+                        +"Login: "+cursor.getString(2)+", "
+                        +"Pass: "+cursor.getString(3);
+                Log.d(key,row);
             } while (cursor.moveToNext());
         }
+        db.close();
     }
 }

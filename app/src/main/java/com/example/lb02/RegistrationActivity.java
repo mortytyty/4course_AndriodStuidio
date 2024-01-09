@@ -34,6 +34,13 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
         cancelButton.setOnClickListener(this);
 
         dataBaseHandler = new DataBaseHandler(this);
+        dataBaseHandler.getTableLog();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        dataBaseHandler.getTableLog();
     }
 
     @Override
@@ -59,7 +66,12 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
                         "A user with this login already exists", Toast.LENGTH_SHORT).show();
                 return;
             }
-            dataBaseHandler.addUser(new User(fName, login, pass));
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    dataBaseHandler.addUser(new User(fName, login, pass));
+                }
+            }).start();
             finish();
         }
         else if(id == R.id.btn_reg_cancel){

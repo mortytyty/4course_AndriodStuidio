@@ -1,19 +1,15 @@
 package com.example.lb02;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.Toast;
-
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
 
 import com.example.lb02.Handlers.DataBaseHandler;
 
@@ -32,6 +28,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_layout);
 
+
         nameText = findViewById(R.id.et1name);
         passText = findViewById(R.id.et2pass);
 
@@ -41,6 +38,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         registerButton.setOnClickListener(this);
 
         dataBaseHandler = new DataBaseHandler(this);
+        dataBaseHandler.getTableLog();
 
         Log.d(LifeCycleTag,"LoginActivity created");
     }
@@ -90,6 +88,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     Intent listIntent = new Intent(this, ListActivity.class);
                     listIntent.putExtra("login", login);
                     startActivity(listIntent);
+                    overridePendingTransition(R.anim.slide_in_right,R.anim.slide_out_left);
                 }else{
                     Toast.makeText(LoginActivity.this,
                             "Invalid login or password", Toast.LENGTH_SHORT).show();
