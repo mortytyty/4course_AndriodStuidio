@@ -1,16 +1,19 @@
 package com.example.lb02;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.lb02.Handlers.DataBaseHandler;
-import com.example.lb02.Models.User;
+import com.example.lb02.Handlers.ThreadTask;
 
 public class RegistrationActivity extends AppCompatActivity implements View.OnClickListener{
 
@@ -19,7 +22,22 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
     EditText passText;
     Button regButton;
     Button cancelButton;
-    DataBaseHandler dataBaseHandler;
+    final Looper looper = Looper.getMainLooper();
+    final Handler handler = new Handler(looper){
+        @Override
+        public void handleMessage(@NonNull Message msg) {
+            if(msg.sendingUid == 3){
+                if(msg.obj=="success") {
+                    Toast.makeText(RegistrationActivity.this,
+                            "User successfully registered", Toast.LENGTH_SHORT).show();
+                    RegistrationActivity.this.finish();
+                }else
+                    Toast.makeText(RegistrationActivity.this,
+                        "A user with this login already exists", Toast.LENGTH_SHORT).show();
+            }
+        }
+    };
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,19 +47,11 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
         loginText = findViewById(R.id.et_reg_login);
         passText = findViewById(R.id.et_reg_pass);
         regButton = findViewById(R.id.btn_reg_register);
-        cancelButton = (Button)findViewById(R.id.btn_reg_cancel);
+        cancelButton = findViewById(R.id.btn_reg_cancel);
         regButton.setOnClickListener(this);
         cancelButton.setOnClickListener(this);
-
-        dataBaseHandler = new DataBaseHandler(this);
-        dataBaseHandler.getTableLog();
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        dataBaseHandler.getTableLog();
-    }
 
     @Override
     public void onClick(View view) {
@@ -61,18 +71,7 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
                         "Password must be longer than 5 characters", Toast.LENGTH_SHORT).show();
                 return;
             }
-            if(dataBaseHandler.checkUserLoginExist(login)){
-                Toast.makeText(RegistrationActivity.this,
-                        "A user with this login already exists", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    dataBaseHandler.addUser(new User(fName, login, pass));
-                }
-            }).start();
-            finish();
+            new ThreadTask(handler,this).checkExistAndReg(login,pass,fName);
         }
         else if(id == R.id.btn_reg_cancel){
             finish();

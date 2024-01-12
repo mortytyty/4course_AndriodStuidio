@@ -50,7 +50,6 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
         etNewPass= findViewById(R.id.et1newpass);
 
         dbHandler = new DataBaseHandler(this);
-        dbHandler.getTableLog();
 
         login = Objects.requireNonNull(getIntent().getExtras()).getString("login");
 
@@ -109,7 +108,6 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
                 @Override
                 public void run() {
                     dbHandler.changePassword(login,newPass);
-                    dbHandler.getTableLog();
                 }
             }).start();
 
@@ -129,7 +127,6 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
                         @Override
                         public void run() {
                             dbHandler.removeUser(login);
-                            dbHandler.getTableLog();
                         }
                     }).start();
                     finish();

@@ -11,7 +11,6 @@ import com.example.lb02.Models.User;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 import java.util.Objects;
 
 
@@ -59,12 +58,14 @@ public class DataBaseHandler extends SQLiteOpenHelper {
             do {
                 //Log.d("DataBaseOut","Login: "+cursor.getString(0)+" "+login);
                 if (Objects.equals(cursor.getString(0), login)) {
+                    getTableLog();
                     dataBase.close();
                     return true;
                 }
             } while (cursor.moveToNext());
         }
         dataBase.close();
+        getTableLog();
         return false;
     }
     public boolean checkDataValidation(String login,String pass){
@@ -84,15 +85,15 @@ public class DataBaseHandler extends SQLiteOpenHelper {
 
         if (cursor.moveToFirst()) {
             do {
-                //Log.d("DataBaseOut","Login: "+cursor.getString(0)+" "+login);
-                //Log.d("DataBaseOut","Pass: "+cursor.getString(1)+" "+pass);
                 if (Objects.equals(cursor.getString(0), login) && Objects.equals(cursor.getString(1), pass)){
                     dataBase.close();
+                    getTableLog();
                     return true;
                 }
             } while (cursor.moveToNext());
         }
         dataBase.close();
+        getTableLog();
         return false;
     }
     public long addUser(User user) {
@@ -113,6 +114,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         String[] selectionArgs = { login };
         int deletedRows = db.delete(DBContract.UserEntry.TABLE_NAME,selection ,selectionArgs);
         db.close();
+        getTableLog();
         return deletedRows;
     }
     public int changePassword(String login, String newPass){
@@ -131,6 +133,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
                 selectionArgs);
 
         db.close();
+        getTableLog();
         return count;
     }
     public String getName(String login){
@@ -144,11 +147,13 @@ public class DataBaseHandler extends SQLiteOpenHelper {
                 if (Objects.equals(cursor.getString(1), login))
                 {
                     db.close();
+                    getTableLog();
                     return cursor.getString(0);
                 }
             } while (cursor.moveToNext());
         }
         db.close();
+        getTableLog();
         return "empty *-*";
     }
     public void getTableLog() {

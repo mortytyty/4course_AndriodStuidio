@@ -43,7 +43,6 @@
         android:paddingStart="15dp"
         android:paddingEnd="15dp"
         android:gravity="center"
-        android:text="TestText"
         android:textSize="18sp"
         android:background="@drawable/acc_text_background"/>
 
@@ -65,7 +64,6 @@
         android:paddingStart="15dp"
         android:paddingEnd="15dp"
         android:textSize="18sp"
-        android:text="TestText"
         android:gravity="center"
         android:background="@drawable/acc_text_background"/>
 
